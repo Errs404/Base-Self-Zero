@@ -12,7 +12,6 @@ const { start, success, getBuffer, h2k, generateMessageID, getGroupAdmins, getRa
 const { color, bgcolor } = require('./lib/color')
 const { fetchJson, getBase64, kyun, createExif } = require('./lib/fetcher')
 const axios = require('axios')
-const canvas = require('knights-canvas')
 const moment = require('moment-timezone')
 const fetch = require("node-fetch")
 const lolcatjs = require('lolcatjs')
@@ -37,7 +36,7 @@ baterai = {
 lolcatjs.options.seed = Math.round(Math.random() * 1000)
 lolcatjs.options.colors = true
 
-CFonts.say('/system/data/data/com.teremux/files:\n[ROOT] STARTING BOT...', {
+CFonts.say('/system/data/data/com.teremux/files:\n[ROOT] STARTING BOT...\nBy: Prassz', {
   font: 'console',
   align: 'left',
   gradient: ['magenta', 'red']
@@ -48,7 +47,7 @@ CFonts.say('Base SelfZero', {
   align: 'center',
   color: 'blue'
 })
-CFonts.say(`UELCOME USER`, {
+CFonts.say(`WELCOME USER\nBy: Prassz`, {
   font: 'console',
   align: 'center',
   gradient: ['red', 'magenta']
@@ -183,15 +182,13 @@ const starts = async (pras = new WAConnection()) => {
         anu_user = v.vname || v.notify || num.split("@")[0]
         time_wel = moment.tz("Asia/Jakarta").format("HH:mm")
         wel = `Halo @${anu_user} \nWelcome In ${mdata.subject} \nKalau Mau Intro Silahkan \nTaati Peraturan Group ya Umm \nsapa member baru dengan cara klik tombol dibawah`
-        const imagese = await new canvas.Welcome()
-          .setUsername(anu_user)
-          .setGuildName(mdata.subject)
-          .setGuildIcon(shortgc.data)
-          .setMemberCount(groupMembers.length)
-          .setAvatar(shortpc.data)
-          .setBackground("https://telegra.ph/file/4a7f884935b8ebf444d9e.jpg")
-          .toAttachment()
-        data = imagese.toBuffer()
+        buff = await getBuffer(
+          `http://hadi-api.herokuapp.com/api/card/welcome?nama=${anu_user}&descriminator=${
+            groupMembers.length
+          }&memcount=${memeg}&gcname=${encodeURI(
+            mdata.subject
+          )}&pp=${shortpc}&bg=https://telegra.ph/file/4a7f884935b8ebf444d9e.jpg`
+        )
         but = [
           { buttonId: 'add', buttonText: { displayText: 'Welcome Member Baru' }, type: 1 }
         ]
@@ -205,15 +202,13 @@ const starts = async (pras = new WAConnection()) => {
         time_wel = moment.tz("Asia/Jakarta").format("HH:mm")
         memeg = mdata.participants.length
         out = `Mari Kita Doakan Bersama-Sama Buat Yang Keluar \nSayonara @${anu_user} Semoga Tenang Di Alam Sana`
-        const imagesek = await new canvas.Goodbye()
-          .setUsername(anu_user)
-          .setGuildName(mdata.subject)
-          .setGuildIcon(shortgc.data)
-          .setMemberCount(groupMembers.length)
-          .setAvatar(shortpc.data)
-          .setBackground("https://telegra.ph/file/4a7f884935b8ebf444d9e.jpg")
-          .toAttachment()
-        data = imagesek.toBuffer()
+        buff = await getBuffer(
+          `http://hadi-api.herokuapp.com/api/card/goodbye?nama=${anu_user}&descriminator=${
+            groupMembers.length
+          }&memcount=${memeg}&gcname=${encodeURI(
+            mdata.subject
+          )}&pp=${shortpc}&bg=https://telegra.ph/file/4a7f884935b8ebf444d9e.jpg`
+        )
         but = [
           { buttonId: 'remove', buttonText: { displayText: 'Sayonara kawand' }, type: 1 }
         ]

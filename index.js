@@ -42,7 +42,7 @@ CFonts.say('/system/data/data/com.teremux/files:\n[ROOT] STARTING BOT...\nBy: Pr
   gradient: ['magenta', 'red']
 })
 
-CFonts.say('Base SelfZero', {
+CFonts.say('Base\nSelf Zero', {
   font: 'simple',
   align: 'center',
   color: 'blue'
@@ -71,9 +71,10 @@ const starts = async (pras = new WAConnection()) => {
   await pras.connect({ timeoutMs: 30 * 1000 })
   fs.writeFileSync('./Prasz.json', JSON.stringify(pras.base64EncodedAuthInfo(), null, '\t'))
 
-  
+
   const sendButImage = async (from, context, fotext, img, but) => {
-    jadinya = await pras.prepareMessage(from, img, MessageType.image)
+    gam = img
+    jadinya = await pras.prepareMessage(from, gam, MessageType.image)
     buttonMessagesI = {
       imageMessage: jadinya.message.imageMessage,
       contentText: context,
@@ -101,7 +102,7 @@ const starts = async (pras = new WAConnection()) => {
     let weton = ['Pahing', 'Pon', 'Wage', 'Kliwon', 'Legi'][Math.floor(((d * 1) + gmt) / 84600000) % 5]
     return `${thisDay}, ${day} - ${myMonths[bulan]} - ${year}`
   }
-  
+
   pras.on('chat-update', async (message) => {
     require('./Prasz.js')(pras, message, _welkom)
   })
@@ -147,10 +148,9 @@ const starts = async (pras = new WAConnection()) => {
   })
 
   pras.on("group-participants-update", async (anu) => {
-     
-  const isWelkom = _welkom.includes(anu.jid) 
+
+    const isWelkom = _welkom.includes(anu.jid)
     try {
-      if (!isWelkom) return 
       groupMet = await pras.groupMetadata(anu.jid)
       groupMembers = groupMet.participants
       groupAdmins = getGroupAdmins(groupMembers)
@@ -160,8 +160,7 @@ const starts = async (pras = new WAConnection()) => {
       try {
         pp_user = await pras.getProfilePicture(mem)
       } catch (e) {
-        pp_user =
-          "https://telegra.ph/file/c9dfa715c26518201f478.jpg"
+        pp_user = "https://telegra.ph/file/c9dfa715c26518201f478.jpg"
       }
       try {
         pp_grup = await pras.getProfilePicture(anu.jid)
@@ -169,11 +168,10 @@ const starts = async (pras = new WAConnection()) => {
         pp_grup =
           "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png?q=60"
       }
-      const shortpc = await axios.get(`https://tinyurl.com/api-create.php?url=${pp_user}`)
-      const shortgc = await axios.get(`https://tinyurl.com/api-create.php?url=${pp_grup}`)
       if (anu.action == "add" && mem.includes(pras.user.jid)) {
         pras.sendMessage(anu.jid, "Halo!.. saya ZeroBot saya akan membatu mempermudah kehidupan..seperti membuat sticker dan lain-lain. untuk meulai silahkan ketik !menu.", "conversation")
       }
+      if (!isWelkom) return
       if (anu.action == "add" && !mem.includes(pras.user.jid)) {
         mdata = await pras.groupMetadata(anu.jid)
         memeg = mdata.participants.length
@@ -183,17 +181,18 @@ const starts = async (pras = new WAConnection()) => {
         time_wel = moment.tz("Asia/Jakarta").format("HH:mm")
         wel = `Halo @${anu_user} \nWelcome In ${mdata.subject} \nKalau Mau Intro Silahkan \nTaati Peraturan Group ya Umm \nsapa member baru dengan cara klik tombol dibawah`
         buff = await getBuffer(
-          `http://hadi-api.herokuapp.com/api/card/welcome?nama=${anu_user}&descriminator=${
-            groupMembers.length
+          `http://hadi-api.herokuapp.com/api/card/welcome?nama=${anu_user}&descriminator=${groupMembers.length
           }&memcount=${memeg}&gcname=${encodeURI(
             mdata.subject
-          )}&pp=${shortpc}&bg=https://telegra.ph/file/4a7f884935b8ebf444d9e.jpg`
+          )}&pp=${pp_user}&bg=https://telegra.ph/file/4a7f884935b8ebf444d9e.jpg`
         )
+
         but = [
           { buttonId: 'add', buttonText: { displayText: 'Welcome Member Baru' }, type: 1 }
         ]
-        sendButImage(mdata.id, wel, "Welcome Semoga Betah :)\nBy: <02/> Zero", data, but)
+        sendButImage(mdata.id, wel, "Welcome Semoga Betah :)\nBy: <02/> Zero", buff, but)
       }
+      if (!isWelkom) return
       if (anu.action == "remove" && !mem.includes(pras.user.jid)) {
         mdata = await pras.groupMetadata(anu.jid)
         num = anu.participants[0]
@@ -203,23 +202,22 @@ const starts = async (pras = new WAConnection()) => {
         memeg = mdata.participants.length
         out = `Mari Kita Doakan Bersama-Sama Buat Yang Keluar \nSayonara @${anu_user} Semoga Tenang Di Alam Sana`
         buff = await getBuffer(
-          `http://hadi-api.herokuapp.com/api/card/goodbye?nama=${anu_user}&descriminator=${
-            groupMembers.length
+          `http://hadi-api.herokuapp.com/api/card/goodbye?nama=${anu_user}&descriminator=${groupMembers.length
           }&memcount=${memeg}&gcname=${encodeURI(
             mdata.subject
-          )}&pp=${shortpc}&bg=https://telegra.ph/file/4a7f884935b8ebf444d9e.jpg`
+          )}&pp=${pp_user}&bg=https://telegra.ph/file/4a7f884935b8ebf444d9e.jpg`
         )
+
         but = [
           { buttonId: 'remove', buttonText: { displayText: 'Sayonara kawand' }, type: 1 }
         ]
-        sendButImage(mdata.id, out, "Sayonaraa \nKlo Balik Bawa Gorengan ye :) \nBy: <02/> Zero", data, but)
+        sendButImage(mdata.id, out, "Sayonaraa \nKlo Balik Bawa Gorengan ye :) \nBy: <02/> Zero", buff, but)
       }
       if (anu.action == "promote") {
         const mdata = await pras.groupMetadata(anu.jid)
         anu_user = pras.contacts[mem]
         num = anu.participants[0]
         try {
-          if (!isWelkom) return 
           ppimg = await pras.getProfilePicture(
             `${anu.participants[0].split("@")[0]}@c.us`
           )
@@ -237,7 +235,6 @@ const starts = async (pras = new WAConnection()) => {
         num = anu.participants[0]
         const mdata = await pras.groupMetadata(anu.jid)
         try {
-          if (!isWelkom) return 
           ppimg = await pras.getProfilePicture(
             `${anu.participants[0].split("@")[0]}@c.us`
           )
@@ -255,9 +252,9 @@ const starts = async (pras = new WAConnection()) => {
     } catch (e) {
       console.log("Error : %s", color(e, "red"))
     }
-  
-})
-  
+
+  })
+
   pras.on('CB:Blocklist', json => {
     if (blocked.length > 2) return
     for (let i of json[1].blocklist) {
